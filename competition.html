@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competition Simulation</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; }
+        .container { max-width: 800px; margin: 50px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; border: none; background-color: #007bff; color: white; border-radius: 5px; }
+        button:hover { background-color: #0056b3; }
+        .result-list { text-align: left; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Competition Simulation</h1>
+        <p>Simulate a competition between your trained athletes.</p>
+        
+        <button onclick="simulateCompetition()">Start Competition</button>
+        <ul id="resultList" class="result-list"></ul>
+        
+        <a href="index.html">Back to Home</a>
+    </div>
+
+    <script>
+        function simulateCompetition() {
+            const resultList = document.getElementById("resultList");
+            resultList.innerHTML = "";
+            let athletes = JSON.parse(localStorage.getItem("athletes")) || [];
+            
+            if (athletes.length < 2) {
+                alert("Not enough athletes to start a competition.");
+                return;
+            }
+            
+            athletes.forEach(athlete => {
+                athlete.performance = (athlete.stats.speed + athlete.stats.strength + athlete.stats.endurance) + Math.floor(Math.random() * 20);
+            });
+            
+            athletes.sort((a, b) => b.performance - a.performance);
+            
+            athletes.forEach((athlete, index) => {
+                const li = document.createElement("li");
+                li.textContent = `${index + 1}. ${athlete.name} (${athlete.country}) - Performance Score: ${athlete.performance}`;
+                resultList.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
