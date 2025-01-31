@@ -3,53 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
+    <title>Admin Dashboard</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; }
         .container { max-width: 800px; margin: 50px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
-        button { padding: 10px 20px; font-size: 16px; cursor: pointer; border: none; background-color: #007bff; color: white; border-radius: 5px; }
-        button:hover { background-color: #0056b3; }
-        .athlete-list { text-align: left; margin-top: 20px; }
+        input, select, button { padding: 10px; margin: 5px; font-size: 16px; }
+        .player-list { text-align: left; margin-top: 20px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Admin Panel</h1>
-        <p>Manage countries, athletes, and competitions.</p>
+        <h1>Admin Dashboard</h1>
+        <p>Manage players, assign countries, and update medal points.</p>
         
-        <button onclick="generateAthlete()">Generate Athlete</button>
-        <ul id="athleteList" class="athlete-list"></ul>
+        <h2>Assign Country to Player</h2>
+        <label for="playerSelect">Select Player:</label>
+        <select id="playerSelect"></select>
+        <label for="countrySelect">Select Country:</label>
+        <select id="countrySelect">
+            <option value="">-- Select a country --</option>
+            <option value="Australia">Australia</option>
+            <option value="Bulgaria">Bulgaria</option>
+            <option value="Chile">Chile</option>
+            <option value="Denmark">Denmark</option>
+            <option value="Iceland">Iceland</option>
+            <option value="Germany">Germany</option>
+            <option value="France">France</option>
+            <option value="Greece">Greece</option>
+            <option value="Cyprus">Cyprus</option>
+            <option value="Turkey">Turkey</option>
+            <option value="Egypt">Egypt</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="Ireland">Ireland</option>
+            <option value="Hungary">Hungary</option>
+            <option value="Serbia">Serbia</option>
+            <option value="Italy">Italy</option>
+            <option value="Austria">Austria</option>
+            <option value="United States">United States</option>
+            <option value="Sweden">Sweden</option>
+            <option value="Switzerland">Switzerland</option>
+            <option value="Argentina">Argentina</option>
+            <option value="Belgium">Belgium</option>
+            <option value="Czech Republic">Czech Republic</option>
+            <option value="India">India</option>
+            <option value="Pakistan">Pakistan</option>
+            <option value="Bangladesh">Bangladesh</option>
+            <option value="Myanmar">Myanmar</option>
+            <option value="Canada">Canada</option>
+            <option value="Cuba">Cuba</option>
+            <option value="Mexico">Mexico</option>
+            <option value="Netherlands">Netherlands</option>
+            <option value="Norway">Norway</option>
+            <option value="Romania">Romania</option>
+            <option value="Russia">Russia</option>
+            <option value="Spain">Spain</option>
+            <option value="Japan">Japan</option>
+            <option value="Portugal">Portugal</option>
+            <option value="Brazil">Brazil</option>
+            <option value="Estonia">Estonia</option>
+        </select>
+        <button onclick="assignCountry()">Assign Country</button>
         
+        <h2>Update Medal Points</h2>
+        <label for="pointsPlayerSelect">Select Player:</label>
+        <select id="pointsPlayerSelect"></select>
+        <label for="medalPoints">New Medal Points:</label>
+        <input type="number" id="medalPoints" min="0">
+        <button onclick="updateMedalPoints()">Update Points</button>
+        
+        <h2>Registered Players</h2>
+        <ul id="playerList" class="player-list"></ul>
+        
+        <button onclick="logoutAdmin()">Logout</button>
         <a href="index.html">Back to Home</a>
     </div>
 
     <script>
-        function generateAthlete() {
-            const names = ["John", "Emma", "Liam", "Sophia", "Noah", "Olivia", "Lucas", "Isabella"];
-            const sports = ["100m sprint", "Swimming", "Cycling", "Gymnastics", "Judo", "Basketball", "Fencing"];
-            const age = Math.floor(Math.random() * (35 - 18 + 1)) + 18;
-            const name = names[Math.floor(Math.random() * names.length)];
-            const sport = sports[Math.floor(Math.random() * sports.length)];
-            
-            const athlete = `${name} (${age} years old) - ${sport}`;
-            let athletes = JSON.parse(localStorage.getItem("athletes")) || [];
-            athletes.push(athlete);
-            localStorage.setItem("athletes", JSON.stringify(athletes));
-            displayAthletes();
+        function checkAdminAccess() {
+            const adminEmail = "your-admin-email@example.com";
+            const loggedInUser = localStorage.getItem("loggedInUser");
+            if (loggedInUser !== adminEmail) {
+                alert("Access denied. Only the admin can view this page.");
+                window.location.href = "index.html";
+            }
         }
 
-        function displayAthletes() {
-            const athleteList = document.getElementById("athleteList");
-            athleteList.innerHTML = "";
-            let athletes = JSON.parse(localStorage.getItem("athletes")) || [];
-            athletes.forEach(athlete => {
-                const li = document.createElement("li");
-                li.textContent = athlete;
-                athleteList.appendChild(li);
+        function loadPlayers() {
+            let users = JSON.parse(localStorage.getItem("users")) || {};
+            let playerSelect = document.getElementById("playerSelect");
+            let pointsPlayerSelect = document.getElementById("pointsPlayerSelect");
+            let playerList = document.getElementById("playerList");
+            playerSelect.innerHTML = "";
+            pointsPlayerSelect.innerHTML = "";
+            playerList.innerHTML = "";
+            
+            Object.keys(users).forEach(email => {
+                let option = document.createElement("option");
+                option.value = email;
+                option.textContent = users[email].managerName + " (" + email + ")";
+                playerSelect.appendChild(option);
+                pointsPlayerSelect.appendChild(option.cloneNode(true));
+                
+                let li = document.createElement("li");
+                li.textContent = users[email].managerName + " - Country: " + users[email].country + " - Medal Points: " + users[email].medalPoints;
+                playerList.appendChild(li);
             });
         }
 
-        window.onload = displayAthletes;
+        function assignCountry() {
+            let users = JSON.parse(localStorage.getItem("users")) || {};
+            let playerEmail = document.getElementById("playerSelect").value;
+            let country = document.getElementById("countrySelect").value;
+            
+            if (users[playerEmail]) {
+                users[playerEmail].country = country;
+                localStorage.setItem("users", JSON.stringify(users));
+                alert("Country assigned successfully.");
+                loadPlayers();
+            }
+        }
+
+        function updateMedalPoints() {
+            let users = JSON.parse(localStorage.getItem("users")) || {};
+            let playerEmail = document.getElementById("pointsPlayerSelect").value;
+            let newPoints = document.getElementById("medalPoints").value;
+            
+            if (users[playerEmail]) {
+                users[playerEmail].medalPoints = parseInt(newPoints);
+                localStorage.setItem("users", JSON.stringify(users));
+                alert("Medal Points updated successfully.");
+                loadPlayers();
+            }
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem("loggedInUser");
+            alert("Logged out.");
+            window.location.href = "index.html";
+        }
+        
+        window.onload = function() {
+            checkAdminAccess();
+            loadPlayers();
+        };
     </script>
 </body>
 </html>
