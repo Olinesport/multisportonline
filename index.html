@@ -38,13 +38,27 @@
         <h1>Welcome to Multisport</h1>
         <p>A realistic sports game where players manage countries and train athletes for Olympic competitions.</p>
         
+        <button onclick="window.location.href='register.html'">Register</button>
+        <button id="loginButton" onclick="window.location.href='login.html'">Login</button>
+        <button id="profileButton" onclick="window.location.href='profile.html'" style="display: none;">Profile</button>
         <button onclick="window.location.href='admin.html'">Admin Panel</button>
         <button onclick="window.location.href='players.html'">Player Dashboard</button>
         <button onclick="window.location.href='schedule.html'">Competition Schedule</button>
         <button onclick="window.location.href='competition.html'">Competition Simulation</button>
-        <button onclick="window.location.href='register.html'">Register</button>
-        <button onclick="window.location.href='login.html'">Login</button>
-        <button onclick="window.location.href='profile.html'">Profile</button>
     </div>
+
+    <script>
+        function checkLoginStatus() {
+            const loggedInUser = localStorage.getItem("loggedInUser");
+            if (loggedInUser) {
+                document.getElementById("loginButton").style.display = "none";
+                document.getElementById("profileButton").style.display = "inline-block";
+            } else {
+                document.getElementById("loginButton").style.display = "inline-block";
+                document.getElementById("profileButton").style.display = "none";
+            }
+        }
+        window.onload = checkLoginStatus;
+    </script>
 </body>
 </html>
