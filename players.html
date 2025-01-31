@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Dashboard</title>
+</head>
+<body>
+    <h1>Player Dashboard</h1>
+    <p>View your assigned athletes and train them.</p>
+    <ul id="athleteList"></ul>
+    <a href="index.html">Back to Home</a>
+
+    <script>
+        function displayAthletes() {
+            const athleteList = document.getElementById("athleteList");
+            athleteList.innerHTML = "";
+            let athletes = JSON.parse(localStorage.getItem("athletes")) || [];
+            
+            athletes.forEach((athlete, index) => {
+                const li = document.createElement("li");
+                li.innerHTML = `${athlete} <button onclick="trainAthlete(${index})">Train</button>`;
+                athleteList.appendChild(li);
+            });
+        }
+
+        function trainAthlete(index) {
+            let athletes = JSON.parse(localStorage.getItem("athletes")) || [];
+            if (athletes[index]) {
+                athletes[index] += " (Trained)";
+                localStorage.setItem("athletes", JSON.stringify(athletes));
+                displayAthletes();
+            }
+        }
+
+        window.onload = displayAthletes;
+    </script>
+</body>
+</html>
+
