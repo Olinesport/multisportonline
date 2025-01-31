@@ -7,14 +7,46 @@
     <style>
         body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; }
         .container { max-width: 800px; margin: 50px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
-        a { display: inline-block; margin-top: 20px; text-decoration: none; color: #007bff; font-size: 18px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; border: none; background-color: #28a745; color: white; border-radius: 5px; }
+        button:hover { background-color: #218838; }
+        .athlete-list { text-align: left; margin-top: 20px; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Spelers Dashboard</h1>
-        <p>Bekijk je toegewezen land en train atleten.</p>
+        <p>Bekijk je toegewezen atleten en train ze.</p>
+        <ul id="athleteList" class="athlete-list"></ul>
         <a href="index.html">Terug naar Home</a>
     </div>
+
+    <script>
+        function displayAthletes() {
+            const athleteList = document.getElementById("athleteList");
+            athleteList.innerHTML = "";
+            let athletes = JSON.parse(localStorage.getItem("athletes")) || [];
+            
+            athletes.forEach((athlete, index) => {
+                const li = document.createElement("li");
+                li.innerHTML = `${athlete.name} (${athlete.age} jaar) - ${athlete.sport} (${athlete.country})<br>
+                    Snelheid: ${athlete.stats.snelheid} | Kracht: ${athlete.stats.kracht} | Uithoudingsvermogen: ${athlete.stats.uithoudingsvermogen}<br>
+                    <button onclick="trainAthlete(${index}, 'snelheid')">Train Snelheid</button>
+                    <button onclick="trainAthlete(${index}, 'kracht')">Train Kracht</button>
+                    <button onclick="trainAthlete(${index}, 'uithoudingsvermogen')">Train Uithoudingsvermogen</button>`;
+                athleteList.appendChild(li);
+            });
+        }
+
+        function trainAthlete(index, stat) {
+            let athletes = JSON.parse(localStorage.getItem("athletes")) || [];
+            if (athletes[index]) {
+                athletes[index].stats[stat] += 5; // Verhoog de statistiek met 5 punten
+                localStorage.setItem("athletes", JSON.stringify(athletes));
+                displayAthletes();
+            }
+        }
+
+        window.onload = displayAthletes;
+    </script>
 </body>
 </html>
