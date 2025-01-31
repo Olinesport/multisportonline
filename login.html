@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Login</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; }
+        .container { max-width: 400px; margin: 50px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        input, button { padding: 10px; margin: 5px; font-size: 16px; width: 100%; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Login</h1>
+        <p>Enter your email and password to access your profile.</p>
+        
+        <label for="loginEmail">Email:</label>
+        <input type="email" id="loginEmail" placeholder="Your Email">
+        
+        <label for="loginPassword">Password:</label>
+        <input type="password" id="loginPassword" placeholder="Your Password">
+        
+        <button onclick="loginPlayer()">Login</button>
+        
+        <p>Don't have an account? <a href="register.html">Register here</a></p>
+    </div>
+
+    <script>
+        function loginPlayer() {
+            const email = document.getElementById("loginEmail").value.trim();
+            const password = document.getElementById("loginPassword").value.trim();
+            
+            if (email === "" || password === "") {
+                alert("Please enter your email and password.");
+                return;
+            }
+            
+            let users = JSON.parse(localStorage.getItem("users")) || {};
+            if (!users[email] || users[email].password !== password) {
+                alert("Incorrect email or password.");
+                return;
+            }
+            
+            localStorage.setItem("loggedInUser", email);
+            alert("Login successful! Redirecting to your profile.");
+            window.location.href = "profile.html";
+        }
+    </script>
+</body>
+</html>
