@@ -7,14 +7,59 @@
     <style>
         body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; }
         .container { max-width: 800px; margin: 50px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
-        a { display: inline-block; margin-top: 20px; text-decoration: none; color: #007bff; font-size: 18px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; border: none; background-color: #007bff; color: white; border-radius: 5px; }
+        button:hover { background-color: #0056b3; }
+        .athlete-list { text-align: left; margin-top: 20px; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Admin Paneel</h1>
         <p>Beheer landen, atleten en wedstrijden.</p>
+        
+        <button onclick="generateAthlete()">Genereer Atleet</button>
+        <ul id="athleteList" class="athlete-list"></ul>
+        
         <a href="index.html">Terug naar Home</a>
     </div>
+
+    <script>
+        const countries = {
+            "Nederland": ["Daan", "Sven", "Joris", "Bram", "Maud", "Lisa", "Sanne"],
+            "Duitsland": ["Maximilian", "Felix", "Jonas", "Lena", "Hannah", "Mia"],
+            "Frankrijk": ["Pierre", "Louis", "Antoine", "Camille", "Sophie", "Elise"],
+            "Japan": ["Haruto", "Takumi", "Riku", "Yui", "Sakura", "Aoi"]
+        };
+        
+        const sports = ["100m sprint", "Zwemmen", "Wielrennen", "Turnen", "Judo", "Basketbal", "Schermen"];
+
+        function generateAthlete() {
+            const countryKeys = Object.keys(countries);
+            const country = countryKeys[Math.floor(Math.random() * countryKeys.length)];
+            const name = countries[country][Math.floor(Math.random() * countries[country].length)];
+            const age = Math.floor(Math.random() * (35 - 18 + 1)) + 18;
+            const sport = sports[Math.floor(Math.random() * sports.length)];
+            const stats = { snelheid: 50, kracht: 50, uithoudingsvermogen: 50 };
+            
+            const athlete = { name, age, sport, country, stats };
+            let athletes = JSON.parse(localStorage.getItem("athletes")) || [];
+            athletes.push(athlete);
+            localStorage.setItem("athletes", JSON.stringify(athletes));
+            displayAthletes();
+        }
+
+        function displayAthletes() {
+            const athleteList = document.getElementById("athleteList");
+            athleteList.innerHTML = "";
+            let athletes = JSON.parse(localStorage.getItem("athletes")) || [];
+            athletes.forEach(athlete => {
+                const li = document.createElement("li");
+                li.textContent = `${athlete.name} (${athlete.age} jaar) - ${athlete.sport} (${athlete.country})`;
+                athleteList.appendChild(li);
+            });
+        }
+
+        window.onload = displayAthletes;
+    </script>
 </body>
 </html>
