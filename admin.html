@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Paneel</title>
+    <title>Admin Panel</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; }
         .container { max-width: 800px; margin: 50px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
@@ -14,34 +14,24 @@
 </head>
 <body>
     <div class="container">
-        <h1>Admin Paneel</h1>
-        <p>Beheer landen, atleten en wedstrijden.</p>
+        <h1>Admin Panel</h1>
+        <p>Manage countries, athletes, and competitions.</p>
         
-        <button onclick="generateAthlete()">Genereer Atleet</button>
+        <button onclick="generateAthlete()">Generate Athlete</button>
         <ul id="athleteList" class="athlete-list"></ul>
         
-        <a href="index.html">Terug naar Home</a>
+        <a href="index.html">Back to Home</a>
     </div>
 
     <script>
-        const countries = {
-            "Nederland": ["Daan", "Sven", "Joris", "Bram", "Maud", "Lisa", "Sanne"],
-            "Duitsland": ["Maximilian", "Felix", "Jonas", "Lena", "Hannah", "Mia"],
-            "Frankrijk": ["Pierre", "Louis", "Antoine", "Camille", "Sophie", "Elise"],
-            "Japan": ["Haruto", "Takumi", "Riku", "Yui", "Sakura", "Aoi"]
-        };
-        
-        const sports = ["100m sprint", "Zwemmen", "Wielrennen", "Turnen", "Judo", "Basketbal", "Schermen"];
-
         function generateAthlete() {
-            const countryKeys = Object.keys(countries);
-            const country = countryKeys[Math.floor(Math.random() * countryKeys.length)];
-            const name = countries[country][Math.floor(Math.random() * countries[country].length)];
+            const names = ["John", "Emma", "Liam", "Sophia", "Noah", "Olivia", "Lucas", "Isabella"];
+            const sports = ["100m sprint", "Swimming", "Cycling", "Gymnastics", "Judo", "Basketball", "Fencing"];
             const age = Math.floor(Math.random() * (35 - 18 + 1)) + 18;
+            const name = names[Math.floor(Math.random() * names.length)];
             const sport = sports[Math.floor(Math.random() * sports.length)];
-            const stats = { snelheid: 50, kracht: 50, uithoudingsvermogen: 50 };
             
-            const athlete = { name, age, sport, country, stats };
+            const athlete = `${name} (${age} years old) - ${sport}`;
             let athletes = JSON.parse(localStorage.getItem("athletes")) || [];
             athletes.push(athlete);
             localStorage.setItem("athletes", JSON.stringify(athletes));
@@ -54,7 +44,7 @@
             let athletes = JSON.parse(localStorage.getItem("athletes")) || [];
             athletes.forEach(athlete => {
                 const li = document.createElement("li");
-                li.textContent = `${athlete.name} (${athlete.age} jaar) - ${athlete.sport} (${athlete.country})`;
+                li.textContent = athlete;
                 athleteList.appendChild(li);
             });
         }
