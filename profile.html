@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Profile</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; }
+        .container { max-width: 800px; margin: 50px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        .athlete-list { text-align: left; margin-top: 20px; }
+        button { padding: 10px; margin: 10px; font-size: 16px; cursor: pointer; border: none; background-color: #dc3545; color: white; border-radius: 5px; }
+        button:hover { background-color: #c82333; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Player Profile</h1>
+        <p>Manage your profile and medal points.</p>
+        
+        <h2>Your Information</h2>
+        <p><strong>Manager Name:</strong> <span id="displayName"></span></p>
+        <p><strong>Country:</strong> <span id="displayCountry">Not assigned</span></p>
+        <p><strong>Medal Points:</strong> <span id="medalPoints">0</span></p>
+        
+        <h2>Your Athletes</h2>
+        <ul id="athleteList" class="athlete-list"></ul>
+        
+        <button onclick="logoutPlayer()">Logout</button>
+        <a href="index.html">Back to Home</a>
+    </div>
+
+    <script>
+        function checkLogin() {
+            const loggedInUser = localStorage.getItem("loggedInUser");
+            if (!loggedInUser) {
+                alert("You must log in first.");
+                window.location.href = "login.html";
+                return;
+            }
+            displayProfile(loggedInUser);
+        }
+
+        function displayProfile(email) {
+            let users = JSON.parse(localStorage.getItem("users")) || {};
+            if (!users[email]) {
+                alert("User not found.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            document.getElementById("displayName").textContent = users[email].managerName || "Not set";
+            document.getElementById("displayCountry").textContent = users[email].country || "Not assigned";
+            document.getElementById("medalPoints").textContent = users[email].medalPoints || 0;
+            displayAthletes(users[email].country);
+        }
+        
+        function displayAthletes(playerCountry) {
+            const athleteList = document.getElementById("athleteList");
+            athleteList.innerHTML = "";
+            let athletes = JSON.parse(localStorage.getItem("athletes")) || [];
+            
+            athletes.forEach(athlete => {
+                if (athlete.country === playerCountry) {
+                    const li = document.createElement("li");
+                    li.textContent = `${athlete.name} (${athlete.age} years old) - ${athlete.sport}`;
+                    athleteList.appendChild(li);
+                }
+            });
+        }
+
+        function logoutPlayer() {
+            localStorage.removeItem("loggedInUser");
+            alert("You have been logged out.");
+            window.location.href = "login.html";
+        }
+        
+        window.onload = checkLogin;
+    </script>
+</body>
+</html>
