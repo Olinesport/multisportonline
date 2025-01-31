@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Registration</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; }
+        .container { max-width: 400px; margin: 50px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        input, button { padding: 10px; margin: 5px; font-size: 16px; width: 100%; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Register</h1>
+        <p>Create your player account</p>
+        
+        <label for="managerName">Enter your manager name:</label>
+        <input type="text" id="managerName" placeholder="Your Manager Name">
+        
+        <label for="playerEmail">Enter your email:</label>
+        <input type="email" id="playerEmail" placeholder="Your Email">
+        
+        <label for="playerPassword">Enter a password:</label>
+        <input type="password" id="playerPassword" placeholder="Your Password">
+        
+        <button onclick="registerPlayer()">Register</button>
+        
+        <p>Already registered? <a href="login.html">Login here</a></p>
+    </div>
+
+    <script>
+        function registerPlayer() {
+            const managerName = document.getElementById("managerName").value.trim();
+            const email = document.getElementById("playerEmail").value.trim();
+            const password = document.getElementById("playerPassword").value.trim();
+            
+            if (managerName === "" || email === "" || password === "") {
+                alert("Please fill in all fields.");
+                return;
+            }
+            
+            let users = JSON.parse(localStorage.getItem("users")) || {};
+            if (users[email]) {
+                alert("This email is already registered.");
+                return;
+            }
+            
+            users[email] = { managerName, password, country: "Not assigned", medalPoints: 0 };
+            localStorage.setItem("users", JSON.stringify(users));
+            
+            alert("Registration successful! You can now log in.");
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+</html>
